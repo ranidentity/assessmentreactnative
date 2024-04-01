@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, ScrollView, FlatList, Image } from 'react-native';
 // import { Ionicons } from '@expo/vector-icons'; 
 import globalParameters from "../global";
-import ApiCall from '../api/matchapi';
+import axios from 'axios'
 
 // export async function HomeScreen({}){
 const HomeScreen = () => {
@@ -134,38 +134,36 @@ const styles = StyleSheet.create({
 
 async function getHomeScreenData(){
     console.log("calling api")
-    try {
-        const response = await fetch(globalParameters.baseurl + '/api/v1/match/zuqiu', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept':'application/json',
-                'SiteId': 1,
-                'ProductId': 1,
-            },
-            body: new URLSearchParams({
-                state: "active",
-                duration: 3,
-                limit: 10,
-                order: 'asc',
-                groupby: 'time',
-            })
-        });
-        if (!response.ok) {
-            throw new Error("Response not OK");
-        }
-        const jsonData = await response.json();
+    const requestBody = {
+            state: "active",
+            duration: 3,
+            limit: 10,
+            order: 'asc',
+            groupby: 'time',
+    }
+    const url = globalParameters.baseurl + '/api/v1/match/zuqiu'
+    axios.post(url,requestBody,{
+        headers:{
+            Accept:"application/json",
+            'Content-Type': 'multipart/form-data',
+            'SiteId': 1,
+            'ProductId': 1,
+        },
+    })
+    .then(({data})=>{
+        console.log("success");
         return {
             props:{
-                data: jsonData
+                data: data
             }
         }
-    }catch (error){
-        console.error("Error fetching data:", error);
+    })
+    .catch(err=>{
+        console.log(err);
         return {
             props: {
                 data: null
             }
         };
-    }
+    })
 }
