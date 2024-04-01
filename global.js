@@ -1,5 +1,6 @@
 const globalParameters ={
     color: '#1E62FF',
+    background_row_color: '#F5F5F5',
     font:14,
     siteid:1,
     productid:1,

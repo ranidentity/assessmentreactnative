@@ -1,0 +1,11 @@
+{
+    "language":"简体中文",
+    "screens":{
+        "home":{
+            "title":"首页"
+        }
+    },
+    "action":{
+        "playback":"集锦/录像"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "language":"English",
+    "screens":{
+        "home":{
+            "title":"Home"
+        }
+    },
+    "action":{
+        "playback":"Playback"
+    }
+}
