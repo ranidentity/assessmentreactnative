@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, ScrollView, FlatList, Image } from 'react-native';
 import globalParameters from "../global";
-import axios from 'axios'
 import {formatDateString} from "../common/datefunctions";
 import {truncateText} from "../common/textfunctions";
 import {getMatchStatus} from "../common/matchfunctions";
 import i18next from '../localization/i18n';
+// import {getHomeScreenData} from "../api/matchapi"
+import {retrieveMatchAll} from "../api/matchapi"
 
 const HomeScreen = () => {
     const [data,setData] = useState(null)
@@ -14,7 +15,7 @@ const HomeScreen = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const newData = await getHomeScreenData();
+                const newData = await retrieveMatchAll();
                 setData(newData);
                 setDateMatchList(newData.data.list)
             } catch (error) {
@@ -35,7 +36,7 @@ const HomeScreen = () => {
                     const key = row.match_type+"_"+row.id
                     const date = new Date(row.time);
                     const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',hour12: false  });
-                    const matchIconUrl = row.match_type == "zuqiu" ? require("./../assets/zuqiu.png") : require("./../assets/lanqiu.png");
+                    const matchIconUrl = row.match_type == "zuqiu" ? require("./../assets/zuqiu.png") : require("./../assets/lanqiu.png");   
                     return (
                         <View style={styles.itemContainer} key={key} >
                             <View style={styles.itemDate}>
@@ -46,22 +47,16 @@ const HomeScreen = () => {
                                 </View>
                             </View>
                             <View style={styles.itemDetail}>
-                                <ScrollView horizontal={true}>
+                                <View style={styles.itemDetailVerticalContainer}>
                                     <View style={styles.itemDetailContainer}>
                                         <Text style={styles.itemDetailTeam}>{row.home_team_name}</Text>
-                                        <Text style={styles.itemDetailScores}>10x2</Text>
-                                        <Text style={styles.itemDetailScores}>10x2</Text>
-                                        <Text style={styles.itemDetailScores}>10x2</Text>
-                                        <Text style={styles.itemDetailScores}>10x2</Text>
+                                        <Text style={row.home_score > row.away_score ? styles.itemDetailWinnerScore: styles.itemDetailScore}>{row.home_score}</Text>
                                     </View>
                                     <View style={styles.itemDetailContainer}>
                                         <Text style={styles.itemDetailTeam}>{row.away_team_name}</Text>
-                                        <Text style={styles.itemDetailScores}>10x2</Text>
-                                        <Text style={styles.itemDetailScores}>10x2</Text>
-                                        <Text style={styles.itemDetailScores}>10x2</Text>
-                                        <Text style={styles.itemDetailScores}>10x2</Text>
+                                        <Text style={row.away_score > row.home_score ? styles.itemDetailWinnerScore: styles.itemDetailScore}>{row.away_score}</Text>
                                     </View>
-                                </ScrollView>
+                                </View>
                             </View>
                             <View style={styles.itemAction}>
                                 <Text style={styles.itemActionState}>{getMatchStatus(row.match_type,row.state)}</Text>
@@ -73,48 +68,25 @@ const HomeScreen = () => {
             </> 
         )
     }
-
-  return (
-    <View style={styles.container}>
-        <ScrollView horizontal={true}
-        showsHorizontalScrollIndicator={true}>
-            <Text style={styles.scrollviewoption}>Child 1</Text>
-            <Text style={styles.scrollviewoption}>Child 2</Text>
-            <Text style={styles.scrollviewoption}>Child 3</Text>
-        </ScrollView>
-        <FlatList
-            style={styles.flatlist}
-            data={dateMatchList}
-            renderItem={renderItem}
-        />
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <ScrollView horizontal={true}
+            showsHorizontalScrollIndicator={true}>
+                <Text style={styles.scrollviewoption}>Child 1</Text>
+                <Text style={styles.scrollviewoption}>Child 2</Text>
+                <Text style={styles.scrollviewoption}>Child 3</Text>
+            </ScrollView>
+            <FlatList
+                style={styles.flatlist}
+                data={dateMatchList}
+                renderItem={renderItem}
+                // ListHeaderComponent="abcheader"
+                stickyHeaderIndices={[0]}
+            />
+        </View>
+    );
 };
 export default HomeScreen;
-
-async function getHomeScreenData(){
-    const requestBody = {
-            state: "active",
-            duration: 3,
-            order: 'asc',
-            groupby: 'time',
-    }
-    const url = globalParameters.baseurl + '/api/v1/match/zuqiu'
-    try {
-        const response = await axios.post(url, requestBody, {
-            headers: {
-                Accept: "application/json",
-                'Content-Type': 'multipart/form-data',
-                'SiteId': 1,
-                'ProductId': 1,
-            },
-        });
-        return response.data;
-    } catch (error) {
-        console.log('Error fetching data:', error);
-        return null;
-    }
-}
 
 const styles = StyleSheet.create({
     container: {
@@ -153,26 +125,28 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     itemDetailContainer:{
-        // minWidth:300,
-        // maxWidth:400,
         width: '45%',
         flexDirection:'row',
         justifyContent: 'space-between', 
-        marginBottom:5,
+        paddingVertical:0,
+    },
+    itemDetailVerticalContainer:{
+        flexDirections:'column',
     },
     itemDetailTeam:{
-        // flexDirection:'row',
-        // alignItems:'flex-start',
-        // flexWrap: 'wrap',
-        // flexGrow: 1,   
-        // width:200,
+        width:200,
         paddingLeft:20,
-        // fontWeight:'bold',
     },
-    itemDetailScores:{
+    itemDetailWinnerScore:{
         paddingHorizontal: 5,
         fontWeight:'bold',
         fontSize:12,
+    },
+    itemDetailScore:{
+        paddingHorizontal: 5,
+        fontSize:12,
+        color:'gray',
+        fontWeight:'bold'
     },
     itemAction:{
         borderLeftWidth:0.2,

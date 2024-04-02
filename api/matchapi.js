@@ -1,33 +1,29 @@
-import React, { useState, useEffect } from 'react';
 import globalParameters from '../global';
+import axios from 'axios';
 
-const ApiCall = () => {
-    const [data, setData] = useState(null);
-    useEffect(()=>{
-        fetchData();
-    }, []);
-    const fetchData = async() => {
-        try{
-            const response = await fetch(globalParameters.baseurl+"/api/v1/match/football", {
-                method: 'POST',
-                header: globalParameters.apiheader,
-                body:  JSON.stringify({
-                    state:"active",
-                    limit:10,
-                    duration:3,
-                    order:'asc',
-                    groupby:'time',
-                }),
-            });
-            const jsonData = await response.json();
-            setData(jsonData);
-            console.log("done");
-        }catch (error){
-            console.error('Error fetching data: ',error);
-        }
-    };
-    return(
-        data
-    )
+async function retrieveMatchAll(){
+    const requestBody = {
+        state: "active",
+        duration: 3,
+        order: 'asc',
+        groupby: 'time',
+        important: 1,
+    }
+    const url = globalParameters.baseurl + '/api/v1/match/all'
+    try {
+        const response = await axios.post(url, requestBody, {
+            headers: {
+                Accept: "application/json",
+                'Content-Type': 'multipart/form-data',
+                'SiteId': 1,
+                'ProductId': 1,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.log('Error fetching data:', error);
+        return null;
+    }
 }
-export default ApiCall;
+
+export default retrieveMatchAll;
