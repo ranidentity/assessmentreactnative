@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import i18next from '../localization/i18n';
-import {formatDateString} from "../common/datefunctions";
-import {truncateText} from "../common/textfunctions";
-import {getMatchStatus} from "../common/matchfunctions";
+import i18next from '../../localization/i18n';
+import {formatDateString} from "../../common/datefunctions";
+import {truncateText} from "../../common/textfunctions";
+import {getMatchStatus} from "../../common/matchfunctions";
 import { View, Text, StyleSheet,SectionList, Image } from 'react-native';
-import globalParameters from "../global";
-import retrieveMatchAll from "../api/matchapi"
+import globalParameters from "../../global";
+import retrieveMatchAll from "../../api/matchapi"
 
 const GroupMatchList = () => {
     const [dateMatchList,setDateMatchList] = useState([])
@@ -29,7 +29,7 @@ const GroupMatchList = () => {
     const renderMatchRow = ({item}) => {
         const date = new Date(item.time);
         const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',hour12: false  });
-        const matchIconUrl = item.match_type == "zuqiu" ? require("./../assets/zuqiu.png") : require("./../assets/lanqiu.png"); 
+        const matchIconUrl = item.match_type == "zuqiu" ? require("../../assets/zuqiu.png") : require("../../assets/lanqiu.png"); 
         return (
             <View style={styles.container} >
                 <View style={styles.itemDate}>
@@ -67,6 +67,7 @@ const GroupMatchList = () => {
     }
     return (
         <>
+        
             {
                 dateMatchList.length>0 &&
                 <SectionList

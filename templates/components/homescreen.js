@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, ScrollView, FlatList, Image } from 'react-native';
-import globalParameters from "../global";
-import {formatDateString} from "../common/datefunctions";
-import {truncateText} from "../common/textfunctions";
-import {getMatchStatus} from "../common/matchfunctions";
-import i18next from '../localization/i18n';
+import globalParameters from "../../global";
+import {formatDateString} from "../../common/datefunctions";
+import {truncateText} from "../../common/textfunctions";
+import {getMatchStatus} from "../../common/matchfunctions";
+import i18next from '../../localization/i18n';
 // import {getHomeScreenData} from "../api/matchapi"
-import {retrieveMatchAll} from "../api/matchapi"
+import {retrieveMatchAll} from "../../api/matchapi"
 
 const HomeScreen = () => {
     const [data,setData] = useState(null)
