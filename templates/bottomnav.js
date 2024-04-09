@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
-import { View,Image } from 'react-native';
+import { View,Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import LiveIcon from '../assets/tabs/live.png';
 import LiveActiveIcon from '../assets/tabs/live_active.png';
@@ -12,16 +13,32 @@ import FavouriteIcon from '../assets/tabs/discovery.png';
 import FavouriteActiveIcon from '../assets/tabs/discovery_active.png';
 import HighlightIcon from '../assets/tabs/wonderful.png';
 import HighlightActiveIcon from '../assets/tabs/wonderful_active.png';
+import LoginNo from '../assets/loginNo.png';
 
-// import LiveStack from './stacks/livestack';
 import LiveTabNavigation from './stacks/mainstack';
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
+  const navigation = useNavigation();
+
+  const handleLoginPress = () =>{
+    navigation.navigate('LoginScreen', {
+      // username:'exampleUser',
+      // Id:'woohooo',
+    })
+  }
   return (
     <Tab.Navigator
         initialRouteName="比赛"
         screenOptions={{
+          headerLeft:({navigation})=>
+          {
+            return (
+                <TouchableOpacity onPress={handleLoginPress} style={{paddingHorizontal:10}}>
+                  <Image source={LoginNo} style={{height: 24,width: 24}}/>
+                </TouchableOpacity>
+            )
+          }
         }}
     >
       <Tab.Screen name="比赛" component={LiveTabNavigation} options={{
